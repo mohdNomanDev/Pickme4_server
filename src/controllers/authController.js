@@ -1,4 +1,3 @@
-
 import User from "../models/userModel.js";
 
 import {
@@ -8,14 +7,38 @@ import {
 
 // Controller function to handle user registration
 export const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const {
+    name,
+    phone,
+    email,
+    password,
+    addressLabel,
+    addressLine,
+    city,
+    state,
+    country,
+    locationCoordinates,  // Expecting { lat: Number, lng: Number } from the request body
+  } = req.body;
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create({
+    name,
+    phone,
+    email,
+    password,
+    addressLabel,
+    addressLine,
+    city,
+    state,
+    country,
+    locationCoordinates,  // Store the location coordinates in the user document
+  });
 
   res.status(201).json({ message: "User Registered", user });
 };
 
 // Controller function to handle user login
+// This function authenticates the user and generates access and refresh tokens
+// IT return the user data to react app to store in the state and use across the app
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -50,7 +73,7 @@ export const login = async (req, res) => {
   });
 
   // ✅ Send response with access token (optional, since it's in cookie)
-  res.json({ message: "Logged in successfully", accessToken });
+  res.json({ message: "Logged in successfully", accessToken , user: user });
 };
 
 // Controller function to handle user logout
