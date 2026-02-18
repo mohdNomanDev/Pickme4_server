@@ -1,3 +1,4 @@
+
 import User from "../models/userModel.js";
 
 import {
@@ -36,14 +37,14 @@ export const login = async (req, res) => {
   // ✅ Store BOTH tokens in cookies
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: false, // true in production (HTTPS)
+    secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
     sameSite: "strict",
     maxAge: 15 * 60 * 1000, // 15 min
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: false, // true in production
+    secure: process.env.NODE_ENV === "production", // true in production
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
