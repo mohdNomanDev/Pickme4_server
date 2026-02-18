@@ -1,0 +1,24 @@
+{
+  "name": "user-food-order-platform-backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/mohdNomanDev/User-Food-Platform-Backend#readme",
+  "bugs": {
+    "url": "https://github.com/mohdNomanDev/User-Food-Platform-Backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohdNomanDev/User-Food-Platform-Backend.git"
+  },
+  "license": "ISC",
+  "author": "Mohd Noman",
+  "type": "module",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  }
+}
