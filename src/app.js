@@ -27,5 +27,6 @@ app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies 
 app.use(cookieParser()); // To parse cookies
 
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 
 export default app;
