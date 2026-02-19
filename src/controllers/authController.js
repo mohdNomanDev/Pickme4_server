@@ -17,7 +17,7 @@ export const register = async (req, res) => {
     city,
     state,
     country,
-    locationCoordinates,  // Expecting { lat: Number, lng: Number } from the request body
+    locationCoordinates, // Expecting { lat: Number, lng: Number } from the request body
   } = req.body;
 
   const user = await User.create({
@@ -30,7 +30,7 @@ export const register = async (req, res) => {
     city,
     state,
     country,
-    locationCoordinates,  // Store the location coordinates in the user document
+    locationCoordinates, // Store the location coordinates in the user document
   });
 
   res.status(201).json({ message: "User Registered", user });
@@ -51,29 +51,31 @@ export const login = async (req, res) => {
   const accessToken = generateAccessToken(user); // Generate an access token for the authenticated user
   const refreshToken = generateRefreshToken(user); // Generate a refresh token for the authenticated user
 
-  user.refreshTokens = {
-    token: refreshToken,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiration time for the refresh token (7 days)
-  };
-  await user.save(); // Save the user document with the new refresh token
+  // Store the refresh token in the database with an expiration time
+  await user.updateOne({
+    refreshTokens: {
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
+  });
 
   // ✅ Store BOTH tokens in cookies
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
+    secure: false, // true in production (HTTPS)
     sameSite: "strict",
     maxAge: 15 * 60 * 1000, // 15 min
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // true in production
+    secure: false, // true in production (HTTPS)
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
   // ✅ Send response with access token (optional, since it's in cookie)
-  res.json({ message: "Logged in successfully", accessToken , user: user });
+  res.json({ message: "Logged in successfully", accessToken, user: user });
 };
 
 // Controller function to handle user logout

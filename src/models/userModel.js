@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
         label: {
           type: String,
           enum: ["Home", "Work", "Other"],
-          default: "Home",
+          default: "Home",        
         },
 
         addressLine: {
@@ -76,7 +76,7 @@ const userSchema = new mongoose.Schema(
 
         isDefault: {
           type: Boolean,
-          default: true,
+          default: false,
         },
 
         createdAt: {

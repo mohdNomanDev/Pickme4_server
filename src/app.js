@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -27,6 +29,6 @@ app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies 
 app.use(cookieParser()); // To parse cookies
 
 app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
+app.use("/user",userRoutes);
 
 export default app;
