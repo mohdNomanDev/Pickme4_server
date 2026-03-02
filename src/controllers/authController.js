@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { generateOTP } from "../utils/otpUtils.js";
 
 import {
   generateAccessToken,
@@ -7,46 +8,129 @@ import {
 
 // Controller function to handle user registration
 export const register = async (req, res) => {
-  const {
-    name,
-    phone,
-    email,
-    password,
-    addressLabel,
-    addressLine,
-    city,
-    state,
-    country,
-    locationCoordinates, // Expecting { lat: Number, lng: Number } from the request body
-  } = req.body;
+  const { name, phone, terms } = req.body;
+
+  const existingUser = await User.findOne({ phone });
+  if (existingUser) {
+    return res.status(400).json({ message: "User already exists" });
+  }
+
+  const otp = generateOTP();
 
   const user = await User.create({
     name,
     phone,
-    email,
-    password,
-    addressLabel,
-    addressLine,
-    city,
-    state,
-    country,
-    locationCoordinates, // Store the location coordinates in the user document
+    terms,
+    otp: {
+      code: otp,
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 mins
+    },
   });
 
-  res.status(201).json({ message: "User Registered", user });
+  // TODO: Send OTP via SMS or Email
+  console.log("OTP:", otp);
+
+  res.status(200).json({
+    message: "OTP sent to your email/phone",
+  });
+};
+
+// verify otp after registration controller
+export const verifyOTP = async (req, res) => {
+  const { identifier, otp } = req.body;
+  // convert string to number if it's a phone number
+  let isPhone = /^\d+$/.test(identifier);
+
+  let user;
+  try {
+    if (isPhone) {
+      user = await User.findOne({ phone: identifier });
+      if (!user) throw "User not found";
+    } else {
+      user = await User.findOne({ email: identifier });
+      if (!user) throw "User not found";
+    }
+  } catch (err) {
+    return res.status(404).json({ message: err.message });
+  }
+
+  if (!user.otp || user.otp.code !== otp) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+
+  if (user.otp.expiresAt < new Date()) {
+    return res.status(400).json({ message: "OTP expired" });
+  }
+
+  user.updateOne({ $set: { otp: undefined, isVerified: true } });
+
+  res.json({ message: "Account verified successfully" });
+};
+
+// send login otp
+export const sendLoginOTP = async (req, res) => {
+  const { identifier } = req.body;
+  // how convert string to number if it's a phone number?
+  let isPhone = /^\d+$/.test(identifier);
+
+  let user;
+  try {
+    if (isPhone) {
+      user = await User.findOne({ phone: identifier });
+      if (!user) throw "User not found";
+    } else {
+      user = await User.findOne({ email: identifier });
+      if (!user) throw "User not found";
+    }
+  } catch (err) {
+    return res.status(404).json({ message: err.message });
+  }
+
+  const otp = generateOTP();
+
+  await user.updateOne({
+    $set: {
+      otp: {
+        code: otp,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      },
+    },
+  });
+  console.log("Login OTP:", otp);
+
+  res.json({ message: "OTP sent successfully" });
 };
 
 // Controller function to handle user login
 // This function authenticates the user and generates access and refresh tokens
 // IT return the user data to react app to store in the state and use across the app
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { identifier, otp } = req.body;
+  
+  let isPhone = /^\d+$/.test(identifier);
 
-  const user = await User.findOne({ email }); // Find the user by email in the database
-  if (!user) return res.status(401).json({ message: "Invalid credentials" });
+  let user;
+  try {
+    if (isPhone) {
+      user = await User.findOne({ phone: identifier });
+      if (!user) throw "User not found";
+    } else {
+      user = await User.findOne({ email: identifier });
+      if (!user) throw "User not found";
+    }
+  } catch (err) {
+    return res.status(404).json({ message: err.message });
+  }
 
-  const isMatch = await user.comparePassword(password); // Compare the provided password with the hashed password in the database
-  if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+
+  if (!user.otp || user.otp.code !== otp)
+    return res.status(400).json({ message: "Invalid OTP" });
+
+  if (user.otp.expiresAt < new Date())
+    return res.status(400).json({ message: "OTP expired" });
+
+  // const isMatch = await user.comparePassword(password); // Compare the provided password with the hashed password in the database
+  // if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
   const accessToken = generateAccessToken(user); // Generate an access token for the authenticated user
   const refreshToken = generateRefreshToken(user); // Generate a refresh token for the authenticated user
@@ -57,6 +141,7 @@ export const login = async (req, res) => {
       token: refreshToken,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
+    otp: undefined,
   });
 
   // ✅ Store BOTH tokens in cookies

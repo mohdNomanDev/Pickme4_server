@@ -2,7 +2,13 @@ import express from "express";
 const router = express.Router();
 import auth from "../middlewares/authMiddleware.js";
 
-import { register, login, logout } from "../controllers/authController.js";
+import {
+  register,
+  verifyOTP,
+  login,
+  logout,
+  sendLoginOTP,
+} from "../controllers/authController.js";
 
 //use with /auth
 
@@ -17,9 +23,14 @@ router
   })
   .post(register);
 
-// Login route
+// otp verify
+router.post("/verify-otp", verifyOTP);
+
+// Login route  
+router.route("/login/send-otp").post(sendLoginOTP);
+
 router
-  .route("/login")
+  .route("/login/verify-otp")
   .get((req, res) => {
     res.json({
       message: "Please send a POST request with email and password to log in",
