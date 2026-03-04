@@ -8,42 +8,49 @@ import {
   login,
   logout,
   sendLoginOTP,
+  refreshToken,
 } from "../controllers/authController.js";
 
-//use with /auth
+// Routes for /auth
 
-// Signup route
+// --- Signup Flow ---
 router
   .route("/register")
   .get((req, res) => {
     res.json({
-      message:
-        "Please send a POST request with name, email, and password to register",
+      message: "Step 1: POST to /register with name, phone, and terms to get OTP",
     });
   })
   .post(register);
 
-// otp verify
-router.post("/verify-otp", verifyOTP);
+// Verify registration OTP
+router.post("/register/verify", verifyOTP);
 
-// Login route  
-router.route("/login/send-otp").post(sendLoginOTP);
 
+// --- Login Flow ---
+// Step 1: Send login OTP
+router.post("/login/otp", sendLoginOTP);
+
+// Step 2: Final Login (Verify OTP)
 router
-  .route("/login/verify-otp")
+  .route("/login/verify")
   .get((req, res) => {
     res.json({
-      message: "Please send a POST request with email and password to log in",
+      message: "Step 2: POST to /login/verify with identifier (phone/email) and otp to log in",
     });
   })
   .post(login);
 
-// Home route
-router.route("/home").get(auth, (req, res) => {
-  res.json({ message: "Welcome to the home page", user: req.user });
+
+// --- Token Management ---
+router.post("/refresh-token", refreshToken);
+
+// --- Protected Routes ---
+router.get("/home", auth, (req, res) => {
+  res.json({ success: true, message: "Welcome to the home page", user: req.user });
 });
 
-// Logout route
+// Logout
 router.post("/logout", auth, logout);
 
 export default router;
