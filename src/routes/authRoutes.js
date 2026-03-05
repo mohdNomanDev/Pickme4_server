@@ -28,7 +28,7 @@ router.post("/register/verify", verifyOTP);
 
 
 // --- Login Flow ---
-// Step 1: Send login OTP
+// Step 1: Send login OTP or resend OTP
 router.post("/login/otp", sendLoginOTP);
 
 // Step 2: Final Login (Verify OTP)
