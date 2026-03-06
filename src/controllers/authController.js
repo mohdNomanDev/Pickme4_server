@@ -65,26 +65,32 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   const updatedUser = await User.findByIdAndUpdate(
     user._id,
     { $set: { otp: undefined, isVerified: true } },
-    { new: true }
+    { new: true },
   ).select("-otp -refreshTokens");
 
-  res.json({ 
-    success: true, 
+  res.json({
+    success: true,
     message: "Account verified successfully",
-    user: updatedUser
+    user: updatedUser,
   });
 });
 
 // send login otp
 export const sendLoginOTP = asyncHandler(async (req, res) => {
-  const { identifier } = req.body;
-  let isPhone = /^\d+$/.test(identifier);
-
+  const { identifier, type } = req.body;
   let user;
-  if (isPhone) {
+  if (type == "phone") {
+    if (!/^\d+$/.test(identifier)) {
+      throw new ApiError(400, "Invalid phone number");
+    }
     user = await User.findOne({ phone: identifier });
-  } else {
+  } else if (type == "email") {
+    if (!/\S+@\S+\.\S+/.test(identifier)) {
+      throw new ApiError(400, "Invalid email address");
+    }
     user = await User.findOne({ email: identifier });
+  } else {
+    throw new ApiError(400, "Invalid identifier type");
   }
 
   if (!user) throw new ApiError(404, "User not found");
@@ -105,16 +111,21 @@ export const sendLoginOTP = asyncHandler(async (req, res) => {
 });
 
 // Controller function to handle user login
-export const login = asyncHandler(async (req, res) => {
-  const { identifier, otp } = req.body;
-  
-  let isPhone = /^\d+$/.test(identifier);
-
+export const loginVerify = asyncHandler(async (req, res) => {
+  const { identifier, type, otp } = req.body;
   let user;
-  if (isPhone) {
+  if (type == "phone") {
+    if (!/^\d+$/.test(identifier)) {
+      throw new ApiError(400, "Invalid phone number");
+    }
     user = await User.findOne({ phone: identifier });
-  } else {
+  } else if (type == "email") {
+    if (!/\S+@\S+\.\S+/.test(identifier)) {
+      throw new ApiError(400, "Invalid email address");
+    }
     user = await User.findOne({ email: identifier });
+  } else {
+    throw new ApiError(400, "Invalid identifier type");
   }
 
   if (!user) throw new ApiError(404, "User not found");
@@ -122,8 +133,7 @@ export const login = asyncHandler(async (req, res) => {
   if (!user.otp || user.otp.code !== otp)
     throw new ApiError(400, "Invalid OTP");
 
-  if (user.otp.expiresAt < new Date())
-    throw new ApiError(400, "OTP expired");
+  if (user.otp.expiresAt < new Date()) throw new ApiError(400, "OTP expired");
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
@@ -153,11 +163,11 @@ export const login = asyncHandler(async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  res.json({ 
+  res.json({
     success: true,
-    message: "Logged in successfully", 
-    accessToken, 
-    user 
+    message: "Logged in successfully",
+    accessToken,
+    user,
   });
 });
 
@@ -196,7 +206,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
 
 // Controller function to handle user logout
 export const logout = asyncHandler(async (req, res) => {
-  const userId = req.user.id; 
+  const userId = req.user.id;
 
   await User.findByIdAndUpdate(userId, { $unset: { refreshTokens: "" } });
 

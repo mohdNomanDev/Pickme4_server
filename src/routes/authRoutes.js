@@ -5,7 +5,7 @@ import auth from "../middlewares/authMiddleware.js";
 import {
   register,
   verifyOTP,
-  login,
+  loginVerify,
   logout,
   sendLoginOTP,
   refreshToken,
@@ -39,7 +39,7 @@ router
       message: "Step 2: POST to /login/verify with identifier (phone/email) and otp to log in",
     });
   })
-  .post(login);
+  .post(loginVerify);
 
 
 // --- Token Management ---
