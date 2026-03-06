@@ -64,8 +64,8 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   // Update user and get the updated document
   const updatedUser = await User.findByIdAndUpdate(
     user._id,
-    { $set: { otp: undefined, isVerified: true } },
-    { new: true },
+    { $set: { isVerified: true }, $unset: { otp: "" } },
+    { returnDocument: "after" },
   ).select("-otp -refreshTokens");
 
   res.json({
@@ -143,7 +143,7 @@ export const loginVerify = asyncHandler(async (req, res) => {
       token: refreshToken,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
-    otp: undefined,
+    $unset: { otp: "" },
   });
 
   const cookieOptions = {
