@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/userModel.js";
+import User from "../../modules/ordering/models/userModel.js";
 
 // Middleware to authenticate requests using the access token
 export default async (req, res, next) => {

@@ -1,13 +1,13 @@
 import User from "../models/userModel.js";
-import { generateOTP } from "../utils/otpUtils.js";
+import { generateOTP } from "../../../shared/utils/otpUtils.js";
 import jwt from "jsonwebtoken";
-import asyncHandler from "../utils/asyncHandler.js";
-import ApiError from "../utils/ApiError.js";
+import asyncHandler from "../../../shared/utils/asyncHandler.js";
+import ApiError from "../../../shared/utils/ApiError.js";
 
 import {
   generateAccessToken,
   generateRefreshToken,
-} from "../utils/tokenUtils.js";
+} from "../../../shared/utils/tokenUtils.js";
 
 // Controller function to handle user registration
 export const register = asyncHandler(async (req, res) => {

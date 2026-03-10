@@ -5,18 +5,20 @@ const app = express();
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import ApiError from "./utils/ApiError.js";
 
-dotenv.config(); // Load environment variables from .env file
+// Shared imports
+import ApiError from "./shared/utils/ApiError.js";
 
-app.use(
-  // Use Helmet to set security-related HTTP headers
-  helmet(),
-);
+// Module routes
+import orderingRoutes from "./modules/ordering/routes/index.js";
+import listingRoutes from "./modules/listing/routes/index.js";
+import adminRoutes from "./modules/admin/routes/index.js";
+import deliveryRoutes from "./modules/delivery/routes/index.js";
 
-// Configure CORS to allow requests from the frontend
+dotenv.config();
+
+app.use(helmet());
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -24,12 +26,15 @@ app.use(
   }),
 );
 
-app.use(express.json()); // To parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies (for form submissions)
-app.use(cookieParser()); // To parse cookies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
+// Mount Module Routes
+app.use("/api/ordering", orderingRoutes);
+app.use("/api/listing", listingRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/delivery", deliveryRoutes);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
