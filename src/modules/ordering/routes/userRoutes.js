@@ -14,7 +14,8 @@ import {
 
 // Get user profile and update user profile routes 
 router.route("/profile")
-.get(auth, getUserProfile)
+// .get(auth, getUserProfile)
+.get(getUserProfile) // For testing purposes, remove auth middleware to access without authentication;
 .post(auth, updateUserProfile);
 
 // get user address details and add user address details routes

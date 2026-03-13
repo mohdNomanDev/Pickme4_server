@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Mount Module Routes
-app.use("/api/ordering", orderingRoutes);
+app.use("/ordering", orderingRoutes);
 app.use("/api/listing", listingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/delivery", deliveryRoutes);

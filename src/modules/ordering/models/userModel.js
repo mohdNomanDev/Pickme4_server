@@ -45,57 +45,77 @@ const userSchema = new mongoose.Schema(
     },
 
     // Array of addresses for the user
-    // addresses: [
-    //   {
-    //     label: {
-    //       type: String,
-    //       enum: ["Home", "Work", "Other"],
-    //       default: "Home",
-    //     },
+    addresses: [
+  {
+    label: {
+      type: String,
+      enum: ["Home", "Work", "Other"],
+      default: "Home"
+    },
 
-    //     addressLine: {
-    //       type: String,
-    //       required: true,
-    //     },
+    houseNumber: {
+      type: String,
+      required: true
+    },
 
-    //     city: {
-    //       type: String,
-    //       required: true,
-    //     },
+    buildingName: {
+      type: String
+    },
 
-    //     state: {
-    //       type: String,
-    //       required: true,
-    //     },
+    street: {
+      type: String,
+      required: true
+    },
 
-    //     country: {
-    //       type: String,
-    //       required: true,
-    //     },
+    landmark: {
+      type: String
+    },
 
-    //     location: {
-    //       type: {
-    //         type: String,
-    //         enum: ["Point"],
-    //         default: "Point",
-    //       },
-    //       coordinates: {
-    //         type: [Number], // [longitude, latitude]
-    //         required: true,
-    //       },
-    //     },
+    city: {
+      type: String,
+      required: true
+    },
 
-    //     isDefault: {
-    //       type: Boolean,
-    //       default: false,
-    //     },
+    state: {
+      type: String,
+      required: true
+    },
 
-    //     createdAt: {
-    //       type: Date,
-    //       default: Date.now,
-    //     },
-    //   },
-    // ],
+    country: {
+      type: String,
+      required: true
+    },
+
+    pincode: {
+      type: String
+    },
+
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point"
+      },
+      coordinates: {
+        type: [Number] // [longitude, latitude]
+      }
+    },
+
+    deliveryInstructions: {
+      type: String
+    },
+
+    isDefault: {
+      type: Boolean,
+      default: false
+    },
+
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }
+],
 
     // // cart field to store user's cart items
     // cart: [

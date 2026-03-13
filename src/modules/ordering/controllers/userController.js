@@ -3,9 +3,12 @@ import User from "../models/userModel.js";
 
 // Controller function to get user profile details
 export const getUserProfile = async (req, res) => {
-  const userId = req.user.id;
-  const user = await User.findById(userId);
-  res.json({ "User Profile": user });
+  // const userId = req.user.id; // Get user ID from authenticated user (set by auth middleware)
+  // this is for testing purposes, remove auth middleware to access without authentication;
+  const name = "Mohd Noman";
+  const user = await User.find({ name }).select("-password -refreshTokens"); // Exclude password and refresh tokens from the response
+  console.log("User profile retrieved:", user);
+  res.json({ user });
 };
 
 // Controller function to update user profile personal details like name, phone, email
