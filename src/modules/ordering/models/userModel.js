@@ -46,76 +46,121 @@ const userSchema = new mongoose.Schema(
 
     // Array of addresses for the user
     addresses: [
-  {
-    label: {
-      type: String,
-      enum: ["Home", "Work", "Other"],
-      default: "Home"
-    },
+      {
+        label: {
+          type: String,
+          trim: true,
+          default: "Home",
+        },
 
-    houseNumber: {
-      type: String,
-      required: true
-    },
+        shortAddress: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          match: [
+            /^[A-Z]{4}\d{4}$/,
+            "Invalid Short Address (Example: RAGI2929)",
+          ],
+        },
 
-    buildingName: {
-      type: String
-    },
+        buildingNumber: {
+          type: String,
+          required: true,
+          trim: true,
+          match: [/^\d{4}$/, "Building number must be 4 digits"],
+        },
 
-    street: {
-      type: String,
-      required: true
-    },
+        streetName: {
+          type: String,
+          required: true,
+          trim: true,
+        },
 
-    landmark: {
-      type: String
-    },
+        district: {
+          type: String,
+          required: true,
+          trim: true,
+        },
 
-    city: {
-      type: String,
-      required: true
-    },
+        city: {
+          type: String,
+          required: true,
+          trim: true,
+        },
 
-    state: {
-      type: String,
-      required: true
-    },
+        region: {
+          type: String,
+          required: true,
+          trim: true,
+        },
 
-    country: {
-      type: String,
-      required: true
-    },
+        postalCode: {
+          type: String,
+          required: true,
+          trim: true,
+          match: [/^\d{5}$/, "Postal code must be 5 digits"],
+        },
 
-    pincode: {
-      type: String
-    },
+        secondaryNumber: {
+          type: String,
+          trim: true,
+          match: [/^\d{4}$/, "Secondary number must be 4 digits"],
+        },
 
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point"
+        buildingName: {
+          type: String,
+          trim: true,
+        },
+
+        apartmentNumber: {
+          type: String,
+          trim: true,
+        },
+
+        floor: {
+          type: String,
+          trim: true,
+        },
+
+        landmark: {
+          type: String,
+          trim: true,
+        },
+
+        contactNumber: {
+          type: String,
+          required: true,
+          match: [/^(\+966|05)\d{8}$/, "Invalid Saudi phone number"],
+        },
+
+        location: {
+          type: {
+            type: String,
+            enum: ["Point"],
+            default: "Point",
+          },
+          coordinates: {
+            type: [Number], // [longitude, latitude]
+            required: true,
+          },
+        },
+
+        deliveryInstructions: {
+          type: String,
+          trim: true,
+        },
+
+        isDefault: {
+          type: Boolean,
+          default: false,
+        },
+
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
-      coordinates: {
-        type: [Number] // [longitude, latitude]
-      }
-    },
-
-    deliveryInstructions: {
-      type: String
-    },
-
-    isDefault: {
-      type: Boolean,
-      default: false
-    },
-
-    createdAt: {
-      type: Date,
-      default: Date.now
-    }
-  }
-],
+    ],
 
     // // cart field to store user's cart items
     // cart: [
