@@ -127,12 +127,6 @@ const userSchema = new mongoose.Schema(
           trim: true,
         },
 
-        contactNumber: {
-          type: String,
-          required: true,
-          match: [/^(\+966|05)\d{8}$/, "Invalid Saudi phone number"],
-        },
-
         location: {
           type: {
             type: String,
