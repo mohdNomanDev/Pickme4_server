@@ -21,7 +21,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:8081", // Update with your frontend URL
     credentials: true,
   }),
 );

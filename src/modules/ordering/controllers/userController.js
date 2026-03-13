@@ -5,10 +5,73 @@ import User from "../models/userModel.js";
 export const getUserProfile = async (req, res) => {
   // const userId = req.user.id; // Get user ID from authenticated user (set by auth middleware)
   // this is for testing purposes, remove auth middleware to access without authentication;
-  const name = "Mohd Noman";
-  const user = await User.find({ name }).select("-password -refreshTokens"); // Exclude password and refresh tokens from the response
+  // const name = "Mohd Noman";
+  // const user = await User.findOne({ name }).select("-password -refreshTokens"); // Exclude password and refresh tokens from the response
+  const user = {
+    _id: {
+      $oid: "69aab46db49d308df8f3b1c1",
+    },
+    name: "Mohd Noman",
+    phone: {
+      $numberLong: "9573751736",
+    },
+    terms: true,
+    defaultLanguage: "en",
+    isVerified: true,
+    status: "active",
+    createdAt: {
+      $date: "2026-03-06T11:03:09.653Z",
+    },
+    updatedAt: {
+      $date: "2026-03-06T11:21:55.620Z",
+    },
+    __v: 0,
+    refreshTokens: {
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YWFiNDZkYjQ5ZDMwOGRmOGYzYjFjMSIsImlhdCI6MTc3Mjc5NjExNSwiZXhwIjoxNzczNDAwOTE1fQ.4rdlEkTQ9qa7V0E8s7ZX3D1MWhak7cOX0iBex5c0GIs",
+      expiresAt: {
+        $date: "2026-03-13T11:21:55.619Z",
+      },
+    },
+    addresses: [
+      {
+        label: "Home",
+        houseNumber: "12-4-56",
+        buildingName: "Green Residency",
+        street: "MG Road",
+        landmark: "Near Metro Station",
+        city: "Hyderabad",
+        state: "Telangana",
+        country: "India",
+        pincode: "500081",
+        location: {
+          type: "Point",
+          coordinates: [78.3875, 17.4485],
+        },
+        deliveryInstructions: "Call before arrival",
+        isDefault: true,
+      },
+      {
+        label: "Work",
+        houseNumber: "5th Floor",
+        buildingName: "Cyber Towers",
+        street: "Hitech City Road",
+        landmark: "Opposite Inorbit Mall",
+        city: "Hyderabad",
+        state: "Telangana",
+        country: "India",
+        pincode: "500081",
+        location: {
+          type: "Point",
+          coordinates: [78.383, 17.45],
+        },
+        deliveryInstructions: "Deliver at reception",
+      },
+    ],
+  };
+  
   console.log("User profile retrieved:", user);
-  res.json({ user });
+  res.json(user);
 };
 
 // Controller function to update user profile personal details like name, phone, email
@@ -128,10 +191,7 @@ export const editUserAddress = async (req, res) => {
     });
 
     // Handle location update
-    if (
-      req.body.latitude !== undefined &&
-      req.body.longitude !== undefined
-    ) {
+    if (req.body.latitude !== undefined && req.body.longitude !== undefined) {
       updateFields["addresses.$.location"] = {
         type: "Point",
         coordinates: [req.body.longitude, req.body.latitude],
@@ -157,7 +217,7 @@ export const editUserAddress = async (req, res) => {
     if (req.body.isDefault === true) {
       await User.updateOne(
         { _id: userId },
-        { $set: { "addresses.$[].isDefault": false } }
+        { $set: { "addresses.$[].isDefault": false } },
       );
     }
 
@@ -172,16 +232,14 @@ export const editUserAddress = async (req, res) => {
       {
         returnDocument: "after",
         runValidators: true,
-      }
+      },
     );
 
     res.status(200).json({
       message: "Address updated successfully",
       addresses: updatedUser.addresses,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
