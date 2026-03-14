@@ -27,7 +27,8 @@ router.route("/address")
 // route to edit existing user address details  
 // edit existing address
 router.route('/address/:addressId')
-.post(auth, editUserAddress);
+// .post(auth, editUserAddress);
+.post(editUserAddress); // For testing purposes, remove auth middleware to access without authentication;
 
 
 export default router;

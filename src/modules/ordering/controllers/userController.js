@@ -1,4 +1,5 @@
 // update user profile and get user profile controller functions
+import mongoose from "mongoose";
 import User from "../models/userModel.js";
 
 // Controller function to get user profile details
@@ -141,14 +142,18 @@ export const addUserAddress = async (req, res) => {
 
     const {
       label,
-
+      shortAddress,
       buildingNumber,
       streetName,
       district,
       city,
       region,
       postalCode,
-
+      secondaryNumber,
+      buildingName,
+      apartmentNumber,
+      floor,
+      landmark,
       latitude = 0,
       longitude = 0,
       deliveryInstructions,
@@ -176,14 +181,18 @@ export const addUserAddress = async (req, res) => {
         $push: {
           addresses: {
             label,
-
+            shortAddress,
             buildingNumber,
             streetName,
             district,
             city,
             region,
             postalCode,
-
+            secondaryNumber,
+            buildingName,
+            apartmentNumber,
+            floor,
+            landmark,
             location: {
               type: "Point",
               coordinates: [longitude, latitude],
@@ -222,19 +231,61 @@ export const addUserAddress = async (req, res) => {
 // controller function to edit user address details
 export const editUserAddress = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = '69aab46db49d308df8f3b1c1'; // This is for testing purposes, remove auth middleware to access without authentication;
+    // const userId = req.user.id; // Get user ID from authenticated user (set by auth middleware)
     const { addressId } = req.params;
 
     if (!addressId) {
       return res.status(400).json({ message: "Address ID is required" });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(addressId)) {
+      return res.status(400).json({ message: "Invalid Address ID" });
+    }
+
+    console.log("Data is sending to edit address with ID:", addressId, req.body);
+    // ⭐ Only unset others IF address exists
+    const addressExists = await User.exists({
+      _id: userId,
+      "addresses._id": addressId,
+    });
+
+    if (!addressExists) {
+      return res.status(404).json({ message: "Address not found" });
+    }
+
+    // Check for duplicate label if label is being updated
+    if (req.body.label) {
+      const labelExists = await User.exists({
+        _id: userId,
+        addresses: {
+          $elemMatch: {
+            label: req.body.label,
+            _id: { $ne: new mongoose.Types.ObjectId(addressId) },
+          },
+        },
+      });
+      if (labelExists) {
+        return res.status(400).json({ message: "Address label already exists" });
+      }
+    }
+
+
     const allowedFields = [
       "label",
-      "addressLine",
+      "shortAddress",
+      "buildingNumber",
+      "streetName",
+      "district",
       "city",
-      "state",
-      "country",
+      "region",
+      "postalCode",
+      "secondaryNumber",
+      "buildingName",
+      "apartmentNumber",
+      "floor",
+      "landmark",
+      "deliveryInstructions",
       "isDefault",
     ];
 
@@ -261,16 +312,7 @@ export const editUserAddress = async (req, res) => {
       });
     }
 
-    // ⭐ Only unset others IF address exists
-    const addressExists = await User.exists({
-      _id: userId,
-      "addresses._id": addressId,
-    });
-
-    if (!addressExists) {
-      return res.status(404).json({ message: "Address not found" });
-    }
-
+    
     if (req.body.isDefault === true) {
       await User.updateOne(
         { _id: userId },
@@ -297,6 +339,9 @@ export const editUserAddress = async (req, res) => {
       addresses: updatedUser.addresses,
     });
   } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
     res.status(500).json({ message: error.message });
   }
 };

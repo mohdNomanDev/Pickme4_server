@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema(
     // Array of addresses for the user
     addresses: [
       {
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          default: new mongoose.Types.ObjectId(),
+        },
         label: {
           type: String,
           trim: true,
