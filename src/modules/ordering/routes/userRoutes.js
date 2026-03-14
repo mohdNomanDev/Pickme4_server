@@ -8,6 +8,7 @@ import {
   getUserAddress,
   addUserAddress,
   editUserAddress,
+  deleteUserAddress,
 } from "../controllers/userController.js";
 
 //use with /user
@@ -28,7 +29,8 @@ router.route("/address")
 // edit existing address
 router.route('/address/:addressId')
 // .post(auth, editUserAddress);
-.post(editUserAddress); // For testing purposes, remove auth middleware to access without authentication;
+.post(editUserAddress) // For testing purposes, remove auth middleware to access without authentication;
+.delete(deleteUserAddress); // For testing purposes, remove auth middleware to access without authentication;
 
 
 export default router;

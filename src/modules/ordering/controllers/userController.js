@@ -345,3 +345,43 @@ export const editUserAddress = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// controller function to delete user address details
+export const deleteUserAddress = async (req, res) => {
+  try {
+    const userId = "69aab46db49d308df8f3b1c1"; // This is for testing purposes, remove auth middleware to access without authentication;
+    // const userId = req.user.id; // Get user ID from authenticated user (set by auth middleware)
+    const { addressId } = req.params;
+
+    console.log(addressId, "is the address ID to be deleted");
+
+    if (!addressId) {
+      return res.status(400).json({ message: "Address ID is required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(addressId)) {
+      return res.status(400).json({ message: "Invalid Address ID" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { addresses: { _id: addressId } },
+      },
+      {
+        returnDocument: "after",
+      }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Address deleted successfully",
+      addresses: updatedUser.addresses,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
