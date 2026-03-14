@@ -21,8 +21,10 @@ router.route("/profile")
 // get user address details and add user address details routes
 router.route("/address")
 .get(auth, getUserAddress)
-.post(auth, addUserAddress);
+// .post(auth, addUserAddress); // For testing purposes, remove auth middleware to access without authentication;
+.post(addUserAddress); // For testing purposes, remove auth middleware to access without authentication;
 
+// route to edit existing user address details  
 // edit existing address
 router.route('/address/:addressId')
 .post(auth, editUserAddress);

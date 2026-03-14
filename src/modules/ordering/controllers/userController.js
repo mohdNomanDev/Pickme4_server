@@ -144,17 +144,36 @@ export const getUserAddress = async (req, res) => {
 // controller function to add new user address details
 export const addUserAddress = async (req, res) => {
   try {
-    const userId = req.user.id;
+    // const userId = req.user.id;
+    const userId = "69aab46db49d308df8f3b1c1"; // This is for testing purposes, remove auth middleware to access without authentication;
+    
     const {
       label,
-      addressLine,
+      shortAddress,
+      buildingNumber,
+      streetName,
+      district,
       city,
-      state,
-      country,
-      latitude,
-      longitude,
+      region,
+      postalCode,
+      secondaryNumber,
+      buildingName,
+      apartmentNumber,
+      floor,
+      landmark,
+      latitude = 0,
+      longitude = 0,
+      deliveryInstructions,
       isDefault,
     } = req.body;
+
+    // If this address is set as default, unset other default addresses
+    if (isDefault === true) {
+      await User.updateOne(
+        { _id: userId },
+        { $set: { "addresses.$[].isDefault": false } },
+      );
+    }
 
     const updatedUser = await User.findOneAndUpdate(
       {
@@ -169,15 +188,24 @@ export const addUserAddress = async (req, res) => {
         $push: {
           addresses: {
             label,
-            addressLine,
+            shortAddress,
+            buildingNumber,
+            streetName,
+            district,
             city,
-            state,
-            country,
-            isDefault: isDefault || false,
+            region,
+            postalCode,
+            secondaryNumber,
+            buildingName,
+            apartmentNumber,
+            floor,
+            landmark,
             location: {
               type: "Point",
               coordinates: [longitude, latitude],
             },
+            deliveryInstructions,
+            isDefault: isDefault || false,
           },
         },
       },
@@ -189,8 +217,12 @@ export const addUserAddress = async (req, res) => {
 
     // ❌ If null → label already exists OR user not found
     if (!updatedUser) {
+      const userExists = await User.exists({ _id: userId });
+      if (!userExists) {
+        return res.status(404).json({ message: "User not found" });
+      }
       return res.status(400).json({
-        message: "Address label already exists or user not found",
+        message: "Address label already exists",
       });
     }
 
