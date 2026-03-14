@@ -5,112 +5,104 @@ import User from "../models/userModel.js";
 export const getUserProfile = async (req, res) => {
   // const userId = req.user.id; // Get user ID from authenticated user (set by auth middleware)
   // this is for testing purposes, remove auth middleware to access without authentication;
-  // const name = "Mohd Noman";
-  // const user = await User.findOne({ name }).select("-password -refreshTokens"); // Exclude password and refresh tokens from the response
-  const user = {
-  "_id": {
-    "$oid": "69aab46db49d308df8f3b1c1"
-  },
-  "name": "Mohd Noman",
-  "phone": {
-    "$numberLong": "9573751736"
-  },
-  "terms": true,
-  "defaultLanguage": "en",
-  "isVerified": true,
-  "status": "active",
-  "createdAt": {
-    "$date": "2026-03-06T11:03:09.653Z"
-  },
-  "updatedAt": {
-    "$date": "2026-03-06T11:21:55.620Z"
-  },
-  "__v": 0,
-  "refreshTokens": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YWFiNDZkYjQ5ZDMwOGRmOGYzYjFjMSIsImlhdCI6MTc3Mjc5NjExNSwiZXhwIjoxNzczNDAwOTE1fQ.4rdlEkTQ9qa7V0E8s7ZX3D1MWhak7cOX0iBex5c0GIs",
-    "expiresAt": {
-      "$date": "2026-03-13T11:21:55.619Z"
-    }
-  },
-  "addresses": [
-    {
-      "label": "Home",
-      "shortAddress": "RAGI2929",
-      "buildingNumber": "4821",
-      "streetName": "King Fahd Road",
-      "district": "Al Olaya",
-      "city": "Riyadh",
-      "region": "Riyadh",
-      "postalCode": "12211",
-      "secondaryNumber": "7643",
-      "buildingName": "Al Fahd Tower",
-      "apartmentNumber": "1203",
-      "floor": "12",
-      "landmark": "Near Kingdom Centre",
-      "contactNumber": "+966501234567",
-      "location": {
-        "type": "Point",
-        "coordinates": [
-          46.6753,
-          24.7136
-        ]
-      },
-      "deliveryInstructions": "Call before arrival",
-      "isDefault": true
-    },
-    {
-      "label": "Work",
-      "shortAddress": "MADI4832",
-      "buildingNumber": "1934",
-      "streetName": "Prince Mohammed Bin Abdulaziz Street",
-      "district": "Al Rawdah",
-      "city": "Jeddah",
-      "region": "Makkah",
-      "postalCode": "23432",
-      "secondaryNumber": "5512",
-      "buildingName": "Business Gate",
-      "apartmentNumber": "305",
-      "floor": "3",
-      "landmark": "Opposite Red Sea Mall",
-      "contactNumber": "0551234567",
-      "location": {
-        "type": "Point",
-        "coordinates": [
-          39.1925,
-          21.5433
-        ]
-      },
-      "deliveryInstructions": "Deliver to reception",
-      "isDefault": false
-    },
-    {
-      "label": "Other",
-      "shortAddress": "FADI7744",
-      "buildingNumber": "6612",
-      "streetName": "Prince Sultan Road",
-      "district": "Al Shati",
-      "city": "Jeddah",
-      "region": "Makkah",
-      "postalCode": "23513",
-      "secondaryNumber": "9921",
-      "buildingName": "Sea View Residence",
-      "apartmentNumber": "502",
-      "floor": "5",
-      "landmark": "Near Corniche Beach",
-      "contactNumber": "+966541234567",
-      "location": {
-        "type": "Point",
-        "coordinates": [
-          39.1047,
-          21.543
-        ]
-      },
-      "deliveryInstructions": "Leave with security if unavailable",
-      "isDefault": false
-    }
-  ]
-}
-  
+  const name = "Mohd Noman";
+  const user = await User.findOne({ name }).select("-password -refreshTokens"); // Exclude password and refresh tokens from the response
+  // const user = {
+  //   _id: {
+  //     $oid: "69aab46db49d308df8f3b1c1",
+  //   },
+  //   name: "Mohd Noman",
+  //   phone: {
+  //     $numberLong: "9573751736",
+  //   },
+  //   terms: true,
+  //   defaultLanguage: "en",
+  //   isVerified: true,
+  //   status: "active",
+  //   createdAt: {
+  //     $date: "2026-03-06T11:03:09.653Z",
+  //   },
+  //   updatedAt: {
+  //     $date: "2026-03-06T11:21:55.620Z",
+  //   },
+  //   __v: 0,
+  //   refreshTokens: {
+  //     token:
+  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YWFiNDZkYjQ5ZDMwOGRmOGYzYjFjMSIsImlhdCI6MTc3Mjc5NjExNSwiZXhwIjoxNzczNDAwOTE1fQ.4rdlEkTQ9qa7V0E8s7ZX3D1MWhak7cOX0iBex5c0GIs",
+  //     expiresAt: {
+  //       $date: "2026-03-13T11:21:55.619Z",
+  //     },
+  //   },
+  //   addresses: [
+  //     {
+  //       label: "Home",
+  //       shortAddress: "RAGI2929",
+  //       buildingNumber: "4821",
+  //       streetName: "King Fahd Road",
+  //       district: "Al Olaya",
+  //       city: "Riyadh",
+  //       region: "Riyadh",
+  //       postalCode: "12211",
+  //       secondaryNumber: "7643",
+  //       buildingName: "Al Fahd Tower",
+  //       apartmentNumber: "1203",
+  //       floor: "12",
+  //       landmark: "Near Kingdom Centre",
+  //       contactNumber: "+966501234567",
+  //       location: {
+  //         type: "Point",
+  //         coordinates: [46.6753, 24.7136],
+  //       },
+  //       deliveryInstructions: "Call before arrival",
+  //       isDefault: true,
+  //     },
+  //     {
+  //       label: "Work",
+  //       shortAddress: "MADI4832",
+  //       buildingNumber: "1934",
+  //       streetName: "Prince Mohammed Bin Abdulaziz Street",
+  //       district: "Al Rawdah",
+  //       city: "Jeddah",
+  //       region: "Makkah",
+  //       postalCode: "23432",
+  //       secondaryNumber: "5512",
+  //       buildingName: "Business Gate",
+  //       apartmentNumber: "305",
+  //       floor: "3",
+  //       landmark: "Opposite Red Sea Mall",
+  //       contactNumber: "0551234567",
+  //       location: {
+  //         type: "Point",
+  //         coordinates: [39.1925, 21.5433],
+  //       },
+  //       deliveryInstructions: "Deliver to reception",
+  //       isDefault: false,
+  //     },
+  //     {
+  //       label: "Other",
+  //       shortAddress: "FADI7744",
+  //       buildingNumber: "6612",
+  //       streetName: "Prince Sultan Road",
+  //       district: "Al Shati",
+  //       city: "Jeddah",
+  //       region: "Makkah",
+  //       postalCode: "23513",
+  //       secondaryNumber: "9921",
+  //       buildingName: "Sea View Residence",
+  //       apartmentNumber: "502",
+  //       floor: "5",
+  //       landmark: "Near Corniche Beach",
+  //       contactNumber: "+966541234567",
+  //       location: {
+  //         type: "Point",
+  //         coordinates: [39.1047, 21.543],
+  //       },
+  //       deliveryInstructions: "Leave with security if unavailable",
+  //       isDefault: false,
+  //     },
+  //   ],
+  // };
+
   console.log("User profile retrieved:", user);
   res.json(user);
 };
@@ -146,21 +138,17 @@ export const addUserAddress = async (req, res) => {
   try {
     // const userId = req.user.id;
     const userId = "69aab46db49d308df8f3b1c1"; // This is for testing purposes, remove auth middleware to access without authentication;
-    
+
     const {
       label,
-      shortAddress,
+
       buildingNumber,
       streetName,
       district,
       city,
       region,
       postalCode,
-      secondaryNumber,
-      buildingName,
-      apartmentNumber,
-      floor,
-      landmark,
+
       latitude = 0,
       longitude = 0,
       deliveryInstructions,
@@ -188,18 +176,14 @@ export const addUserAddress = async (req, res) => {
         $push: {
           addresses: {
             label,
-            shortAddress,
+
             buildingNumber,
             streetName,
             district,
             city,
             region,
             postalCode,
-            secondaryNumber,
-            buildingName,
-            apartmentNumber,
-            floor,
-            landmark,
+
             location: {
               type: "Point",
               coordinates: [longitude, latitude],

@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema(
           type: String,
           trim: true,
           default: "Home",
+          required: true,
         },
 
         shortAddress: {
